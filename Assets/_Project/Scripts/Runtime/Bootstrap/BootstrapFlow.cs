@@ -15,6 +15,6 @@ public class BootstrapFlow : IStartable
     {
         await _loadingService.BeginLoading(new ApplicationConfigurationUnit());
 
-        UnitySceneManager.LoadScene("GameScene"); // TODO: Add to constants
+        UnitySceneManager.LoadScene(RuntimeConstants.Scenes.GameScene);
     }
 }

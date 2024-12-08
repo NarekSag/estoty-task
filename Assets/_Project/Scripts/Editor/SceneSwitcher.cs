@@ -10,10 +10,10 @@ public class SceneSwitcher
         EditorSceneManager.OpenScene("Assets/_Project/Scenes/0.Bootstrap.unity");
     }
 
-    [MenuItem("Tools/Scenes/GameScene &2", priority = 202)]
+    [MenuItem("Tools/Scenes/Core &2", priority = 202)]
     public static void OpenCoreScene()
     {
         EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-        EditorSceneManager.OpenScene("Assets/_Project/Scenes/GameScene.unity");
+        EditorSceneManager.OpenScene("Assets/_Project/Scenes/1.Core.unity");
     }
 }
