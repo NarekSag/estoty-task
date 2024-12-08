@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerHealth : IHealth, IDamage
+public class EntityHealth : IHealth, IDamage
 {
     public event Action OnHealthChanged;
     public event Action OnDeath;
@@ -13,7 +13,7 @@ public class PlayerHealth : IHealth, IDamage
 
     public float Max => _max;
 
-    public PlayerHealth(float maxHealth)
+    public EntityHealth(float maxHealth)
     {
         _max = maxHealth;
         _current = maxHealth;
@@ -23,11 +23,11 @@ public class PlayerHealth : IHealth, IDamage
     {
         if (_current <= 0) return;
 
-        _current = Mathf.Clamp(damage, 0, _max);
+        _current = Mathf.Clamp(_current - damage, 0, _max);
 
         OnHealthChanged?.Invoke();
 
-        if(_current <= 0)
+        if (_current <= 0)
         {
             OnDeath?.Invoke();
         }

@@ -2,68 +2,49 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
-public class EnemyController : MonoBehaviour
+public class EnemyController : EntityController
 {
-    [SerializeField] private GameObject _prefabExplosion;
     [SerializeField] private PowerUp _prefabPowerUp;
 
+    protected float _speed;
     private float _powerUpSpawnChance = 0.1f;
-    private float _speed = 2.0f;
 
-    private Rigidbody _body;
-
-    private EnemyHealth _health;
-    public EnemyHealth Health => _health;
-
-    private void Awake()
-    {
-        _body = GetComponent<Rigidbody>();
-    }
+    private ProjectileSpawner _projectileSpawner;
 
     public void Initialize(ConfigContainer.EnemyConfig config, ProjectileFactory projectileFactory)
     {
         _powerUpSpawnChance = config.PowerUpSpawnChance;
         _speed = config.Speed;
 
-        InitializeHealth(config.Health);
-        //if(Random.value < 0.4f)
-            InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);
+        base.Initialize(config.Health, projectileFactory, config.ProjectileConfig);
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
         var p = _body.position;
         p += Vector3.down * (_speed * Time.deltaTime);
         _body.MovePosition(p);
     }
 
-    private void InitializeHealth(int health)
+    protected override void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
     {
-        _health = new EnemyHealth(health);
-        _health.OnDeath += HandleDeath;
+        _projectileSpawner = new ProjectileSpawner(projectileFactory, transform);
+        _projectileSpawner.StartSpawning(EntityType.Enemy, projectileConfig, transform).Forget();
     }
 
-    private void HandleDeath()
+    protected override void HandleDeath()
     {
-        var fx = Instantiate(_prefabExplosion);
-        fx.transform.position = transform.position;
+        _projectileSpawner.Stop();
 
-        if (Random.value < _powerUpSpawnChance)
+        if (UnityEngine.Random.value < _powerUpSpawnChance)
         {
             var powerup = Instantiate(_prefabPowerUp);
             var types = Enum.GetValues(typeof(PowerUp.PowerUpType)).Cast<PowerUp.PowerUpType>().ToList();
-            powerup.SetType(types[Random.Range(0, types.Count)]);
+            powerup.SetType(types[UnityEngine.Random.Range(0, types.Count)]);
         }
 
-        Destroy(gameObject);
-    }
-
-    private void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
-    {
-        ProjectileSpawner projectileSpawner = new ProjectileSpawner(projectileFactory);
-        projectileSpawner.StartSpawning(EntityType.Enemy, projectileConfig, transform).Forget();
+        base.HandleDeath();
     }
 }
