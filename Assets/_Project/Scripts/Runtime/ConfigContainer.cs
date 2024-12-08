@@ -21,6 +21,7 @@ public sealed class ConfigContainer : ILoadUnit
     public class CoreConfigContainer
     {
         public PlayerConfig PlayerConfig;
+        public EnemyConfig EnemyConfig;
     }
 
     [Serializable]
@@ -30,5 +31,25 @@ public sealed class ConfigContainer : ILoadUnit
         public float FireInterval;
         public float MovementRangeMin;
         public float MovementRangeMax;
+
+        public ProjectileConfig ProjectileConfig;
+    }
+
+    [Serializable]
+    public class EnemyConfig
+    {
+        public int Health;
+        public float Speed;
+        public float FireInterval;
+        public float PowerUpSpawnChance;
+
+        public ProjectileConfig ProjectileConfig;
+    }
+
+    [Serializable]
+    public class ProjectileConfig
+    {
+        public float Speed;
+        public int Damage;
     }
 }

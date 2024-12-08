@@ -4,7 +4,21 @@
       "Health": 3,
       "FireInterval": 0.4,
       "MovementRangeMin": -3.0,
-      "MovementRangeMax": 3.0
+      "MovementRangeMax": 3.0,
+      "ProjectileConfig": {
+        "Speed": 5.0,
+        "Damage": 1
+      }
+    },
+    "EnemyConfig": {
+      "Health": 2,
+      "Speed": 2.0,
+      "FireInterval": 2.5,
+      "PowerUpSpawnChance": 0.1,
+      "ProjectileConfig": {
+        "Speed": 3.5,
+        "Damage": 1
+      }
     }
   }
 }
