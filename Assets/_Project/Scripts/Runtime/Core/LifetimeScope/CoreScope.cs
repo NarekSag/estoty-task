@@ -12,8 +12,6 @@ public class CoreScope : LifetimeScope
         builder.Register<EnemyFactory>(Lifetime.Scoped);
         builder.Register<ProjectileFactory>(Lifetime.Scoped);
 
-        builder.Register<EnemySpawner>(Lifetime.Scoped);
-
         builder.Register<CoreController>(Lifetime.Scoped);
 
         builder.RegisterEntryPoint<CoreFlow>();

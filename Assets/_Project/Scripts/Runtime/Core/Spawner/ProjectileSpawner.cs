@@ -14,19 +14,19 @@ public class ProjectileSpawner
 
     private Transform _parent;
 
-    public async UniTask StartSpawning(ConfigContainer.ProjectileConfig config, Transform spawnLocation)
+    public async UniTask StartSpawning(EntityType type, ConfigContainer.ProjectileConfig config, Transform spawnLocation)
     {
         while (true)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(config.FireInterval));
 
-            SpawnProjectile(config, spawnLocation);
+            SpawnProjectile(type, config, spawnLocation);
         }
     }
 
-    private void SpawnProjectile(ConfigContainer.ProjectileConfig config, Transform spawnLocation)
+    private void SpawnProjectile(EntityType type,  ConfigContainer.ProjectileConfig config, Transform spawnLocation)
     {
-        Projectile projectile = _factory.CreateProjectile(config);
+        Projectile projectile = _factory.CreateProjectile(type, config);
 
         projectile.transform.SetParent(_parent);
         projectile.transform.position = spawnLocation.position;

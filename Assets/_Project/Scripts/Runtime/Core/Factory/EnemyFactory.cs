@@ -1,12 +1,19 @@
-public class EnemyFactory : BaseFactory<Enemy>
+public class EnemyFactory : BaseFactory<EnemyController>
 {
-    public Enemy CreateEnemy(ConfigContainer.EnemyConfig enemyConfig)
+    private readonly ProjectileFactory _projectileFactory;
+
+    public EnemyFactory(ProjectileFactory projectileFactory)
     {
-        Enemy enemyObject = CreateObject();
+        _projectileFactory = projectileFactory;
+    }
+
+    public EnemyController CreateEnemy(ConfigContainer.EnemyConfig enemyConfig)
+    {
+        EnemyController enemyObject = CreateObject();
 
         if (enemyObject != null)
         {
-            enemyObject.Initialize(enemyConfig);
+            enemyObject.Initialize(enemyConfig, _projectileFactory);
         }
 
         return enemyObject;

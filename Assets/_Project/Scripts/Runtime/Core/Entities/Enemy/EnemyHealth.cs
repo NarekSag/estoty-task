@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerHealth : IHealth, IDamage
+public class EnemyHealth : IHealth, IDamage
 {
     public event Action OnHealthChanged;
     public event Action OnDeath;
@@ -13,7 +13,7 @@ public class PlayerHealth : IHealth, IDamage
 
     public float Max => _max;
 
-    public PlayerHealth(float maxHealth)
+    public EnemyHealth(float maxHealth)
     {
         _max = maxHealth;
         _current = maxHealth;
@@ -27,7 +27,7 @@ public class PlayerHealth : IHealth, IDamage
 
         OnHealthChanged?.Invoke();
 
-        if(_current <= 0)
+        if (_current <= 0)
         {
             OnDeath?.Invoke();
         }

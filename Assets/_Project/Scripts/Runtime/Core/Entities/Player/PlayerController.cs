@@ -13,8 +13,6 @@ public class PlayerController : MonoBehaviour
     public event Action OnDie;
     public event Action OnHit;
 
-    private float _fireInterval = 0.4f;
-
     private float _movementRangeMin;
     private float _movementRangeMax;
 
@@ -37,7 +35,7 @@ public class PlayerController : MonoBehaviour
         _movementRangeMin = config.MovementRangeMin;
         _movementRangeMax = config.MovementRangeMax;
 
-        InitializeHealth(config);
+        InitializeHealth(config.Health);
         InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);
     }
 
@@ -53,9 +51,9 @@ public class PlayerController : MonoBehaviour
         _body.MovePosition(new Vector3(Mathf.Lerp(_movementRangeMin, _movementRangeMax, xPos), 0.0f, 0.0f));
     }
 
-    private void InitializeHealth(ConfigContainer.PlayerConfig config)
+    private void InitializeHealth(int health)
     {
-        _health = new PlayerHealth(config.Health);
+        _health = new PlayerHealth(health);
         _health.OnDeath += HandleDeath;
     }
 
@@ -68,14 +66,15 @@ public class PlayerController : MonoBehaviour
     private void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
     {
         ProjectileSpawner projectileSpawner = new ProjectileSpawner(projectileFactory);
-        projectileSpawner.StartSpawning(projectileConfig, _projectileSpawnLocation).Forget();
+        projectileSpawner.StartSpawning(EntityType.Player, projectileConfig, _projectileSpawnLocation).Forget();
     }
 
     public void AddPowerUp(PowerUp.PowerUpType type)
     {
         if (type.Equals(PowerUp.PowerUpType.FIRE_RATE))
         {
-            _fireInterval *= 0.9f;
+            //TODO: UPDATE IN PROJECTILE SPAWNER
+            //_fireInterval *= 0.9f;
         }
     }
 }

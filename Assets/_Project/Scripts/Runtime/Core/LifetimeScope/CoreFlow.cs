@@ -13,17 +13,12 @@ public class CoreFlow : IStartable
 
     private readonly PlayerFactory _playerFactory;
     private readonly EnemyFactory _enemyFactory;
-    private readonly ProjectileFactory _projectileFactory;
-
-    private readonly EnemySpawner _enemySpawner;
 
     public CoreFlow(LoadingService loadingService,
         ConfigContainer configContainer,
         CoreController coreController,
         PlayerFactory playerFactory,
-        EnemyFactory enemyFactory,
-        ProjectileFactory projectileFactory,
-        EnemySpawner enemySpawner)
+        EnemyFactory enemyFactory)
     {
         _loadingService = loadingService;
         _configContainer = configContainer;
@@ -32,20 +27,12 @@ public class CoreFlow : IStartable
 
         _playerFactory = playerFactory;
         _enemyFactory = enemyFactory;
-        _projectileFactory = projectileFactory;
-
-        _enemySpawner = enemySpawner;
     }
 
     public async void Start()
     {
         await _loadingService.BeginLoading(_playerFactory, RuntimeConstants.Resources.Entities.Player);
         await _loadingService.BeginLoading(_enemyFactory, RuntimeConstants.Resources.Entities.Enemy);
-
-        await _loadingService.BeginLoading(_projectileFactory, RuntimeConstants.Resources.Projectiles.Player);
-        //await _loadingService.BeginLoading(_projectileFactory, RuntimeConstants.Resources.Projectiles.Enemy);
-
-        await _loadingService.BeginLoading(_enemySpawner);
 
         await _loadingService.BeginLoading(_coreController, _configContainer);
     }

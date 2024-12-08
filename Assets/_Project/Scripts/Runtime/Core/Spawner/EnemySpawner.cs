@@ -1,10 +1,8 @@
 using Cysharp.Threading.Tasks;
-using Scripts.Runtime.Utilities;
 using System;
 using UnityEngine;
-using VContainer.Unity;
 
-public class EnemySpawner : ILoadUnit
+public class EnemySpawner
 {
     private readonly EnemyFactory _enemyFactory;
 
@@ -13,12 +11,7 @@ public class EnemySpawner : ILoadUnit
     public EnemySpawner(EnemyFactory enemyFactory)
     {
         _enemyFactory = enemyFactory;
-    }
-
-    public UniTask Load()
-    {
         SetupSpawnerParent();
-        return UniTask.CompletedTask;
     }
 
     public async UniTask StartSpawning(ConfigContainer.EnemyConfig config)
@@ -33,19 +26,19 @@ public class EnemySpawner : ILoadUnit
 
     private void SpawnEnemy(ConfigContainer.EnemyConfig config)
     {
-        Enemy enemy = _enemyFactory.CreateEnemy(config);
+        EnemyController enemy = _enemyFactory.CreateEnemy(config);
 
         SetParent(ref enemy);
         SetRandomPosition(ref enemy, config.HorizontalSpawnRange);
     }
 
-    private void SetParent(ref Enemy enemy)
+    private void SetParent(ref EnemyController enemy)
     {
         enemy.transform.SetParent(_parent);
         enemy.transform.localPosition = Vector3.zero;
     }
 
-    private void SetRandomPosition(ref Enemy enemy, float horizontalSpawnRange)
+    private void SetRandomPosition(ref EnemyController enemy, float horizontalSpawnRange)
     {
         enemy.transform.position = new Vector3(GetRandomHorizontalPosition(horizontalSpawnRange), enemy.transform.position.y, 0);
     }
