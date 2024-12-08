@@ -10,17 +10,16 @@ public abstract class BaseFactory<TObject> : ILoadUnit<string> where TObject : O
     {
         _loadedObject = Resources.Load<TObject>(resourcePath);
 
-        return UniTask.CompletedTask;
-    }
-
-    protected TObject CreateObject(string resourcePath)
-    {
         if (_loadedObject == null)
         {
             Debug.LogError($"Failed to load object from Resources. Ensure the path '{resourcePath}' is correct and the asset exists.");
-            return null;
         }
 
+        return UniTask.CompletedTask;
+    }
+
+    protected TObject CreateObject()
+    {
         TObject instantiatedObject = Object.Instantiate(_loadedObject);
 
         return instantiatedObject;

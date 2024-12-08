@@ -28,7 +28,6 @@ public sealed class ConfigContainer : ILoadUnit
     public class PlayerConfig
     {
         public int Health;
-        public float FireInterval;
         public float MovementRangeMin;
         public float MovementRangeMax;
 
@@ -40,7 +39,6 @@ public sealed class ConfigContainer : ILoadUnit
     {
         public int Health;
         public float Speed;
-        public float FireInterval;
         public float PowerUpSpawnChance;
 
         public float SpawnInterval;
@@ -54,5 +52,6 @@ public sealed class ConfigContainer : ILoadUnit
     {
         public float Speed;
         public int Damage;
+        public float FireInterval;
     }
 }

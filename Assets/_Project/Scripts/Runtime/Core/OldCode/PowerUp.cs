@@ -25,7 +25,7 @@ public class PowerUp : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         
-        var player = other.GetComponent<Player>();
+        var player = other.GetComponent<PlayerController>();
         if (player == null) return;
 
         player.AddPowerUp(_type);

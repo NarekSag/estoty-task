@@ -15,7 +15,16 @@ public static class RuntimeConstants
 
     public static class Resources
     {
-        public const string Player = "Player";
-        public const string Enemy = "Enemy";
+        public static class Entities
+        {
+            public const string Player = "Entities/Player";
+            public const string Enemy = "Entities/Enemy";
+        }
+
+        public static class Projectiles
+        {
+            public const string Player = "Projectiles/Projectile_Player";
+            public const string Enemy = "Projectiles/Projectile_Enemy";
+        }
     }
 }

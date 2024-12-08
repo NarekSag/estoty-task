@@ -10,6 +10,7 @@ public class CoreScope : LifetimeScope
     {
         builder.Register<PlayerFactory>(Lifetime.Scoped);
         builder.Register<EnemyFactory>(Lifetime.Scoped);
+        builder.Register<ProjectileFactory>(Lifetime.Scoped);
 
         builder.Register<EnemySpawner>(Lifetime.Scoped);
 

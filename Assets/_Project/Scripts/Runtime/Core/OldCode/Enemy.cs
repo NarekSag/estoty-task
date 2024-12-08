@@ -29,7 +29,6 @@ public class Enemy : MonoBehaviour {
     public void Initialize(ConfigContainer.EnemyConfig config)
     {
         _health = config.Health;
-        _fireInterval = config.FireInterval;
         _speed = config.Speed;
     }
 

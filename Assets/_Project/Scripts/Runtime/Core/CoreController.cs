@@ -4,12 +4,17 @@ using Scripts.Runtime.Utilities;
 public class CoreController : ILoadUnit<ConfigContainer>
 {
     private readonly PlayerFactory _playerFactory;
+    private readonly ProjectileFactory _projectileFactory;
+
     private readonly EnemySpawner _enemySpawner;
 
     public CoreController(PlayerFactory playerFactory,
+        ProjectileFactory projectileFactory,
         EnemySpawner enemySpawner)
     {
         _playerFactory = playerFactory;
+        _projectileFactory = projectileFactory;
+
         _enemySpawner = enemySpawner;
     }
 

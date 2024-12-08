@@ -3,13 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour {
-    [SerializeField] private float _speed = 0.0f;
+public class Projectile : MonoBehaviour 
+{
     [SerializeField] private Vector3 _direction = Vector3.up;
+
+    private float _speed = 0.0f;
     private int _damage = 1;
 
-    public void Init(int damage) {
-        _damage = damage;
+    public void Initialize(ConfigContainer.ProjectileConfig config) 
+    {
+        _damage = config.Damage;
+        _speed = config.Speed;
     }
 
     void Update() {
@@ -29,10 +33,10 @@ public class Projectile : MonoBehaviour {
             destroy = true;
         }
         else {
-            var player = other.GetComponent<Player>();
+            var player = other.GetComponent<PlayerController>();
             if (player != null) {
 
-                player.Hit();
+                player.Health.TakeDamage(_damage);
                 destroy = true;
             }
         }
