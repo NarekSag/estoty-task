@@ -30,6 +30,12 @@ public class Player : MonoBehaviour {
         Object.FindObjectOfType<GameOverUi>(true).Close();
     }
 
+    public void Initialize(ConfigContainer.PlayerConfig config)
+    {
+        _health = config.Health;
+        _fireInterval = config.FireInterval;
+    }
+
     private void Update() {
 
         if (Input.GetMouseButtonDown(0)) _hasInput = true;
