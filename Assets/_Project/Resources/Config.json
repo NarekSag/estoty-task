@@ -1,0 +1,10 @@
+{
+  "Core": {
+    "PlayerConfig": {
+      "Health": 3,
+      "FireInterval": 0.4,
+      "MovementRangeMin": -3.0,
+      "MovementRangeMax": 3.0
+    }
+  }
+}

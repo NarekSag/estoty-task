@@ -16,6 +16,7 @@ public class BootstrapScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<LoadingService>(Lifetime.Scoped);
+        builder.Register<ConfigContainer>(Lifetime.Singleton);
 
         builder.RegisterEntryPoint<BootstrapFlow>();
     }
