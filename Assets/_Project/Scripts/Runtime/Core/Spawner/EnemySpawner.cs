@@ -5,12 +5,14 @@ using UnityEngine;
 public class EnemySpawner
 {
     private readonly EnemyFactory _enemyFactory;
+    private readonly ProjectileSpawner _projectileSpawner;
 
     private Transform _parent;
 
-    public EnemySpawner(EnemyFactory enemyFactory)
+    public EnemySpawner(EnemyFactory enemyFactory, ProjectileFactory projectileFactory)
     {
         _enemyFactory = enemyFactory;
+        _projectileSpawner = new ProjectileSpawner(projectileFactory);
         SetupSpawnerParent();
     }
 
@@ -28,17 +30,26 @@ public class EnemySpawner
     {
         EnemyController enemy = _enemyFactory.CreateEnemy(config);
 
-        SetParent(ref enemy);
-        SetRandomPosition(ref enemy, config.HorizontalSpawnRange);
+        SetParent(enemy);
+        SetRandomPosition(enemy, config.HorizontalSpawnRange);
+        SetProjectileSpawner(enemy, config.ProjectileConfig);
     }
 
-    private void SetParent(ref EnemyController enemy)
+    private void SetProjectileSpawner(EnemyController enemy, ConfigContainer.ProjectileConfig projectileConfig)
+    {
+        if (UnityEngine.Random.value < 0.4f)
+        {
+            enemy.InitializeProjectileSpawner(projectileConfig, _projectileSpawner);
+        }
+    }
+
+    private void SetParent(EnemyController enemy)
     {
         enemy.transform.SetParent(_parent);
         enemy.transform.localPosition = Vector3.zero;
     }
 
-    private void SetRandomPosition(ref EnemyController enemy, float horizontalSpawnRange)
+    private void SetRandomPosition(EnemyController enemy, float horizontalSpawnRange)
     {
         enemy.transform.position = new Vector3(GetRandomHorizontalPosition(horizontalSpawnRange), enemy.transform.position.y, 0);
     }

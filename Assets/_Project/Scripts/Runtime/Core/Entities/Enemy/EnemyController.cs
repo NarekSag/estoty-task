@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -10,15 +11,16 @@ public class EnemyController : EntityController
 
     protected float _speed;
     private float _powerUpSpawnChance = 0.1f;
+    private CancellationTokenSource _projectileSpawnerCts;
 
-    private ProjectileSpawner _projectileSpawner;
-
-    public void Initialize(ConfigContainer.EnemyConfig config, ProjectileFactory projectileFactory)
+    public void Initialize(ConfigContainer.EnemyConfig config)
     {
         _powerUpSpawnChance = config.PowerUpSpawnChance;
         _speed = config.Speed;
 
-        base.Initialize(config.Health, projectileFactory, config.ProjectileConfig);
+        _projectileSpawnerCts = new CancellationTokenSource();
+
+        base.Initialize(config.Health);
     }
 
     protected override void FixedUpdate()
@@ -28,15 +30,23 @@ public class EnemyController : EntityController
         _body.MovePosition(p);
     }
 
-    protected override void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
+    public void InitializeProjectileSpawner(
+        ConfigContainer.ProjectileConfig projectileConfig,
+        ProjectileSpawner sharedProjectileSpawner)
     {
-        _projectileSpawner = new ProjectileSpawner(projectileFactory, transform);
-        _projectileSpawner.StartSpawning(EntityType.Enemy, projectileConfig, transform).Forget();
+        sharedProjectileSpawner.StartSpawning(
+            EntityType.Enemy,
+            projectileConfig,
+            transform,
+            _projectileSpawnerCts.Token
+        ).Forget();
     }
 
     protected override void HandleDeath()
     {
-        _projectileSpawner.Stop();
+        _projectileSpawnerCts?.Cancel();
+        _projectileSpawnerCts?.Dispose();
+        _projectileSpawnerCts = null;
 
         if (UnityEngine.Random.value < _powerUpSpawnChance)
         {

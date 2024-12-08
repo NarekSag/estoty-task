@@ -1,5 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System;
 using UnityEngine;
 
 public abstract class EntityController : MonoBehaviour
@@ -16,10 +14,9 @@ public abstract class EntityController : MonoBehaviour
         _body = GetComponent<Rigidbody>();
     }
 
-    public virtual void Initialize(float health, ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
+    public virtual void Initialize(float health)
     {
         InitializeHealth(health);
-        InitializeProjectileSpawner(projectileFactory, projectileConfig);
     }
 
     protected void InitializeHealth(float health)
@@ -36,5 +33,4 @@ public abstract class EntityController : MonoBehaviour
     }
 
     protected abstract void FixedUpdate();
-    protected abstract void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig);
 }

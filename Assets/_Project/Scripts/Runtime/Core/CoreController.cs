@@ -22,7 +22,7 @@ public class CoreController : ILoadUnit<ConfigContainer>
     {
         _playerFactory.CreatePlayer(config.Core.PlayerConfig);
 
-        _enemySpawner = new EnemySpawner(_enemyFactory);
+        _enemySpawner = new EnemySpawner(_enemyFactory, _projectileFactory);
         _enemySpawner.StartSpawning(config.Core.EnemyConfig).Forget();
 
         return UniTask.CompletedTask;

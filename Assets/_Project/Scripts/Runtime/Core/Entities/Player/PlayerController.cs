@@ -8,6 +8,8 @@ public class PlayerController : EntityController
     [SerializeField] private Transform _projectileSpawnLocation;
 
     private IInput _input;
+    private ProjectileSpawner _projectileSpawner;
+
     private float _movementRangeMin;
     private float _movementRangeMax;
 
@@ -17,7 +19,10 @@ public class PlayerController : EntityController
         _movementRangeMin = config.MovementRangeMin;
         _movementRangeMax = config.MovementRangeMax;
 
-        base.Initialize(config.Health, projectileFactory, config.ProjectileConfig);
+
+        InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);
+
+        base.Initialize(config.Health);
     }
 
     protected override void FixedUpdate()
@@ -32,10 +37,16 @@ public class PlayerController : EntityController
         _body.MovePosition(new Vector3(Mathf.Lerp(_movementRangeMin, _movementRangeMax, xPos), 0.0f, 0.0f));
     }
 
-    protected override void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
+    private void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
     {
-        ProjectileSpawner projectileSpawner = new ProjectileSpawner(projectileFactory);
-        projectileSpawner.StartSpawning(EntityType.Player, projectileConfig, _projectileSpawnLocation).Forget();
+        _projectileSpawner = new ProjectileSpawner(projectileFactory);
+        _projectileSpawner.StartSpawning(EntityType.Player, projectileConfig, _projectileSpawnLocation).Forget();
+    }
+
+    protected override void HandleDeath()
+    {
+        base.HandleDeath();
+        _projectileSpawner.Stop();
     }
 
     public void AddPowerUp(PowerUp.PowerUpType type)

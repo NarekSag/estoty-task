@@ -7,6 +7,7 @@ public class ProjectileSpawner
 {
     private readonly ProjectileFactory _factory;
     private Transform _parent;
+
     private CancellationTokenSource _cancellationTokenSource;
 
     public ProjectileSpawner(ProjectileFactory factory)
@@ -21,21 +22,29 @@ public class ProjectileSpawner
         SetupSpawnerParent(parent);
     }
 
-    public async UniTask StartSpawning(EntityType type, ConfigContainer.ProjectileConfig config, Transform spawnLocation)
+    public async UniTask StartSpawning(EntityType type, ConfigContainer.ProjectileConfig config, Transform spawnLocation, CancellationToken externalCancellationToken = default)
     {
-        _cancellationTokenSource?.Cancel();
+        Stop();
         _cancellationTokenSource = new CancellationTokenSource();
+
+        // Combine the local and external cancellation tokens
+        var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(
+            _cancellationTokenSource.Token,
+            externalCancellationToken
+        ).Token;
 
         try
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            SpawnProjectile(type, config, spawnLocation);
+
+            while (!combinedToken.IsCancellationRequested)
             {
                 await UniTask.Delay(
                     TimeSpan.FromSeconds(config.FireInterval),
-                    cancellationToken: _cancellationTokenSource.Token
+                    cancellationToken: combinedToken
                 );
 
-                if (_cancellationTokenSource.IsCancellationRequested)
+                if (combinedToken.IsCancellationRequested)
                     break;
 
                 SpawnProjectile(type, config, spawnLocation);
@@ -55,15 +64,17 @@ public class ProjectileSpawner
         projectile.transform.position = spawnLocation.position;
     }
 
-    public void Stop()
-    {
-        _cancellationTokenSource?.Cancel();
-    }
-
     // To keep the inspector organized, we will create a ProjectileSpawner object 
     // so that all projectiles are stored within this parent object.
     private void SetupSpawnerParent(Transform parent = null)
     {
         _parent = parent ?? new GameObject("ProjectileSpawner").transform;
+    }
+
+    public void Stop()
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
     }
 }
