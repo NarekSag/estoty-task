@@ -15,6 +15,8 @@
       "Speed": 2.0,
       "FireInterval": 2.5,
       "PowerUpSpawnChance": 0.1,
+      "SpawnInterval": 1.25,
+      "HorizontalSpawnRange": 2.8,
       "ProjectileConfig": {
         "Speed": 3.5,
         "Damage": 1

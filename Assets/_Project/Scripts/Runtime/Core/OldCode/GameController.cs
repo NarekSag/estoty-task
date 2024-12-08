@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour {
         _running = true;
     }
 
-    void Update() {
+    /*void Update() {
         if (!_running) return;
         _enemySpawnTimer += Time.deltaTime;
         if ( _enemySpawnTimer >= _enemySpawnInterval ) {
@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour {
 
             _enemySpawnTimer -= _enemySpawnInterval;
         }
-    }
+    }*/
 
     void OnPlayerDie() {
         _running = false;

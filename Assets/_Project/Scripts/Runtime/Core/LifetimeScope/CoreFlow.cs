@@ -11,22 +11,31 @@ public class CoreFlow : IStartable
 
     private readonly CoreController _coreController;
     private readonly PlayerFactory _playerFactory;
+    private readonly EnemyFactory _enemyFactory;
+    private readonly EnemySpawner _enemySpawner;
 
     public CoreFlow(LoadingService loadingService,
         ConfigContainer configContainer,
         CoreController coreController,
-        PlayerFactory playerFactory)
+        PlayerFactory playerFactory,
+        EnemyFactory enemyFactory,
+        EnemySpawner enemySpawner)
     {
         _loadingService = loadingService;
         _configContainer = configContainer;
 
         _coreController = coreController;
         _playerFactory = playerFactory;
+        _enemyFactory = enemyFactory;
+        _enemySpawner = enemySpawner;
     }
 
     public async void Start()
     {
         await _loadingService.BeginLoading(_playerFactory, RuntimeConstants.Resources.Player);
+        await _loadingService.BeginLoading(_enemyFactory, RuntimeConstants.Resources.Enemy);
+
+        await _loadingService.BeginLoading(_enemySpawner);
 
         await _loadingService.BeginLoading(_coreController, _configContainer);
     }

@@ -43,6 +43,9 @@ public sealed class ConfigContainer : ILoadUnit
         public float FireInterval;
         public float PowerUpSpawnChance;
 
+        public float SpawnInterval;
+        public float HorizontalSpawnRange;
+
         public ProjectileConfig ProjectileConfig;
     }
 

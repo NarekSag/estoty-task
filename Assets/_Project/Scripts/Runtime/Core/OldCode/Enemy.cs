@@ -26,6 +26,13 @@ public class Enemy : MonoBehaviour {
         _health = 2 + Mathf.Min(Mathf.FloorToInt(Time.time / 15f), 5);
     }
 
+    public void Initialize(ConfigContainer.EnemyConfig config)
+    {
+        _health = config.Health;
+        _fireInterval = config.FireInterval;
+        _speed = config.Speed;
+    }
+
     void Update() {
 
         if (canFire) {
