@@ -5,49 +5,48 @@ using System;
 
 public class ProjectileFactory
 {
-    private readonly ProjectileAssets _projectileAssets;
-
-    private class ProjectileAssets
-    {
-        public Projectile PlayerProjectile { get; }
-        public Projectile EnemyProjectile { get; }
-
-        public ProjectileAssets(string playerProjectilePath, string enemyProjectilePath)
-        {
-            PlayerProjectile = LoadProjectile(playerProjectilePath, "Player");
-            EnemyProjectile = LoadProjectile(enemyProjectilePath, "Enemy");
-        }
-
-        private Projectile LoadProjectile(string path, string typeName)
-        {
-            var projectile = Resources.Load<Projectile>(path);
-            if (projectile == null)
-            {
-                throw new InvalidOperationException(
-                    $"Failed to load {typeName} projectile from path: {path}");
-            }
-            return projectile;
-        }
-    }
+    private readonly Projectile _playerProjectilePrefab;
+    private readonly Projectile _enemyProjectilePrefab;
+    private readonly ObjectPool<Projectile> _playerProjectilePool;
+    private readonly ObjectPool<Projectile> _enemyProjectilePool;
 
     public ProjectileFactory()
     {
-        _projectileAssets = new ProjectileAssets(
-            RuntimeConstants.Resources.Projectiles.Player,
-            RuntimeConstants.Resources.Projectiles.Enemy
-        );
+        _playerProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Player);
+        _enemyProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Enemy);
+
+        _playerProjectilePool = new ObjectPool<Projectile>(_playerProjectilePrefab);
+        _enemyProjectilePool = new ObjectPool<Projectile>(_enemyProjectilePrefab);
     }
 
     public Projectile CreateProjectile(EntityType type, ConfigContainer.ProjectileConfig config)
     {
         Projectile projectileObject = type switch
         {
-            EntityType.Player => UnityEngine.Object.Instantiate(_projectileAssets.PlayerProjectile),
-            EntityType.Enemy => UnityEngine.Object.Instantiate(_projectileAssets.EnemyProjectile),
+            EntityType.Player => _playerProjectilePool.Get(),
+            EntityType.Enemy => _enemyProjectilePool.Get(),
             _ => throw new ArgumentException($"Unsupported projectile type: {type}")
         };
 
-        projectileObject.Initialize(config);
+        projectileObject.Initialize(config, type);
+        projectileObject.gameObject.SetActive(true);
+        projectileObject.OnDestroy += ReturnProjectile;
+
         return projectileObject;
+    }
+
+    public void ReturnProjectile(Projectile projectile)
+    {
+        projectile.OnDestroy -= ReturnProjectile;
+
+        switch (projectile.EntityType)
+        {
+            case EntityType.Player:
+                _playerProjectilePool.Return(projectile);
+                break;
+            case EntityType.Enemy:
+                _enemyProjectilePool.Return(projectile);
+                break;
+        }
     }
 }
