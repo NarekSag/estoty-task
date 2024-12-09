@@ -29,7 +29,7 @@ public abstract class EntityController : MonoBehaviour
     {
         var fx = Instantiate(_prefabExplosion);
         fx.transform.position = transform.position;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     protected abstract void FixedUpdate();

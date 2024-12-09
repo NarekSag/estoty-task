@@ -30,6 +30,7 @@ public class EntityHealth : IHealth, IDamage
         if (_current <= 0)
         {
             OnDeath?.Invoke();
+            OnDeath = null;
         }
     }
 }

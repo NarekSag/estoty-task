@@ -5,23 +5,24 @@ using UnityEngine;
 public abstract class BaseFactory<TObject> : ILoadUnit<string> where TObject : Object
 {
     private TObject _loadedObject;
+    private ObjectPool<TObject> _objectPool;
 
     public UniTask Load(string resourcePath)
     {
-        _loadedObject = Resources.Load<TObject>(resourcePath);
+        _loadedObject = ResourceLoader.Load<TObject>(resourcePath);
 
-        if (_loadedObject == null)
-        {
-            Debug.LogError($"Failed to load object from Resources. Ensure the path '{resourcePath}' is correct and the asset exists.");
-        }
+        _objectPool = new ObjectPool<TObject>(_loadedObject);
 
         return UniTask.CompletedTask;
     }
 
     protected TObject CreateObject()
     {
-        TObject instantiatedObject = Object.Instantiate(_loadedObject);
+        return _objectPool.Get();
+    }
 
-        return instantiatedObject;
+    public virtual void ReturnObject(TObject obj)
+    {
+        _objectPool.Return(obj);
     }
 }
