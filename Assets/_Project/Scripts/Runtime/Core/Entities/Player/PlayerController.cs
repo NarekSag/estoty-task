@@ -7,18 +7,12 @@ public class PlayerController : EntityController
 {
     [SerializeField] private Transform _projectileSpawnLocation;
 
-    private IInput _input;
+    private PlayerInput _input;
     private ProjectileSpawner _projectileSpawner;
-
-    private float _movementRangeMin;
-    private float _movementRangeMax;
 
     public void Initialize(ConfigContainer.PlayerConfig config, IInput input, ProjectileFactory projectileFactory)
     {
-        _input = input;
-        _movementRangeMin = config.MovementRangeMin;
-        _movementRangeMax = config.MovementRangeMax;
-
+        InitializePlayerInput(input, _body);
 
         InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);
 
@@ -27,14 +21,12 @@ public class PlayerController : EntityController
 
     protected override void FixedUpdate()
     {
-        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
-            HandleInput();
+        _input.HandleInput();
     }
 
-    private void HandleInput()
+    private void InitializePlayerInput(IInput input, Rigidbody body)
     {
-        float xPos = _input.Direction.x / Screen.width;
-        _body.MovePosition(new Vector3(Mathf.Lerp(_movementRangeMin, _movementRangeMax, xPos), 0.0f, 0.0f));
+        _input = new PlayerInput(input, body);
     }
 
     private void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)
