@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using UnityEngine;
 
 public class EnemySpawner
@@ -13,22 +14,42 @@ public class EnemySpawner
     {
         _enemyFactory = enemyFactory;
         _projectileSpawner = new ProjectileSpawner(projectileFactory);
-        SetupSpawnerParent();
     }
+
+    private CancellationTokenSource _cancellationTokenSource;
 
     public async UniTask StartSpawning(ConfigContainer.EnemyConfig config)
     {
-        while (true)
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(config.SpawnInterval));
+        Stop();
 
-            SpawnEnemy(config);
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            while (true)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(config.SpawnInterval), cancellationToken: _cancellationTokenSource.Token);
+                SpawnEnemy(config);
+            }
         }
+        catch (OperationCanceledException)
+        {
+            Debug.Log("Spawning cancelled.");
+        }
+    }
+
+    public void Stop()
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
     }
 
     private void SpawnEnemy(ConfigContainer.EnemyConfig config)
     {
         EnemyController enemy = _enemyFactory.CreateEnemy(config);
+
+        if (enemy == null) return;
 
         SetParent(enemy);
         SetRandomPosition(enemy, config.HorizontalSpawnRange);
@@ -45,6 +66,8 @@ public class EnemySpawner
 
     private void SetParent(EnemyController enemy)
     {
+        if (_parent == null) SetupSpawnerParent();
+
         enemy.transform.SetParent(_parent);
         enemy.transform.localPosition = Vector3.zero;
     }

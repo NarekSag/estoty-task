@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EntityHealth : IHealth
 {
-    public event Action OnHealthChanged;
+    public event Action<float> OnHealthChanged;
     public event Action OnDeath;
 
     private float _current;
@@ -25,7 +25,7 @@ public class EntityHealth : IHealth
 
         _current = Mathf.Clamp(_current - damage, 0, _max);
 
-        OnHealthChanged?.Invoke();
+        OnHealthChanged?.Invoke(_current);
 
         if (_current <= 0)
         {

@@ -30,7 +30,7 @@ public class CoreController : ILoadUnit<ConfigContainer>
     {
         InitializePlayer(config.Core.PlayerConfig);
         InitializeEnemySpawner(config.Core.EnemyConfig);
-        InitializeViewController(config.Core.PlayerConfig.Health);
+        InitializeViewController();
 
         return UniTask.CompletedTask;
     }
@@ -47,12 +47,12 @@ public class CoreController : ILoadUnit<ConfigContainer>
         _enemySpawner.StartSpawning(enemyConfig).Forget();
     }
 
-    private void InitializeViewController(int health)
+    private void InitializeViewController()
     {
         _viewController.GameplayView.Show();
         _viewController.GameOverView.Hide();
 
-        _viewController.GameplayView.Initialize(health);
+        _viewController.GameplayView.Initialize(Player);
 
         _viewController.GameOverView.OnRetry += RestartCore;
     }
@@ -61,10 +61,15 @@ public class CoreController : ILoadUnit<ConfigContainer>
     {
         _viewController.GameplayView.Hide();
         _viewController.GameOverView.Show();
+
+        _enemySpawner.Stop();
+
+        Time.timeScale = 0f;
     }
 
     private void RestartCore()
     {
+        Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene(RuntimeConstants.Scenes.Core);
     }
 }

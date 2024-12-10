@@ -6,9 +6,9 @@ public class GameplayView : BaseView
     [SerializeField] private ScoreView _score;
     [SerializeField] private HealthView _health;
 
-    public void Initialize(int health)
+    public void Initialize(PlayerController player)
     {
-        _health.Initialize(health);
+        _health.Initialize(player);
         _score.UpdateText(0);
     }
 }

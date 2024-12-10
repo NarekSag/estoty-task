@@ -1,60 +1,49 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class HealthView : MonoBehaviour
 {
     [SerializeField] private GameObject _healthPrefab;
+    [SerializeField] private int _maxHealth = 10; // Maximum number of hearts
 
-    private List<GameObject> _hearts = new();
+    private List<GameObject> _hearts = new List<GameObject>();
 
-    public void Initialize(int health)
+    public void Initialize(PlayerController player)
     {
         ClearHearts();
 
-        for (int i = 0; i < health; i++)
-        {
-            AddHeart();
-        }
+        player.Health.OnHealthChanged += UpdateHealth;
+        UpdateHealth(player.Health.Current);
     }
 
-    public void UpdateHealth(int value)
+    public void UpdateHealth(float currentHealth)
     {
-        int activeHearts = GetActiveHeartCount();
-        int targetHealth = Mathf.Clamp(activeHearts + value, 0, _hearts.Count);
-
-        if (value < 0)
+        for (int i = 0; i < _hearts.Count; i++)
         {
-            for (int i = activeHearts - 1; i >= targetHealth; i--)
+            if (i < currentHealth)
+            {
+                _hearts[i].SetActive(true);
+            }
+            else
             {
                 _hearts[i].SetActive(false);
             }
         }
-        else if (value > 0)
+
+        if (currentHealth > _hearts.Count)
         {
-            for (int i = activeHearts; i < targetHealth; i++)
-            {
-                _hearts[i].SetActive(true);
-            }
+            AddHearts(currentHealth);
         }
     }
 
-    //TODO: Add heart if a player gets a power up
-    public void AddHeart()
+    private void AddHearts(float count)
     {
-        GameObject heart = Instantiate(_healthPrefab, transform);
-        heart.SetActive(true);
-        _hearts.Add(heart);
-    }
-
-    private int GetActiveHeartCount()
-    {
-        int count = 0;
-        foreach (var heart in _hearts)
+        for (int i = 0; i < count; i++)
         {
-            if (heart.activeSelf) count++;
+            var heart = Instantiate(_healthPrefab, transform);
+            heart.SetActive(true);
+            _hearts.Add(heart);
         }
-        return count;
     }
 
     private void ClearHearts()
