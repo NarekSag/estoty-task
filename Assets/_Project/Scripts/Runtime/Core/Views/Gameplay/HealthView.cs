@@ -4,16 +4,16 @@ using UnityEngine;
 public class HealthView : MonoBehaviour
 {
     [SerializeField] private GameObject _healthPrefab;
-    [SerializeField] private int _maxHealth = 10; // Maximum number of hearts
+    [SerializeField] private int _maxHealth = 10;
 
     private List<GameObject> _hearts = new List<GameObject>();
 
-    public void Initialize(PlayerController player)
+    public void Initialize(EntityHealth playerHealth)
     {
         ClearHearts();
 
-        player.Health.OnHealthChanged += UpdateHealth;
-        UpdateHealth(player.Health.Current);
+        playerHealth.OnHealthChanged += UpdateHealth;
+        UpdateHealth(playerHealth.Current);
     }
 
     public void UpdateHealth(float currentHealth)

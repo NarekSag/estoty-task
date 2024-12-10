@@ -8,7 +8,7 @@ public class GameplayView : BaseView
 
     public void Initialize(PlayerController player)
     {
-        _health.Initialize(player);
-        _score.UpdateText(0);
+        _health.Initialize(player.Health);
+        _score.Initialize(player.Score);
     }
 }

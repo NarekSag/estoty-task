@@ -8,11 +8,16 @@ public class PlayerController : EntityController
     [SerializeField] private Transform _projectileSpawnLocation;
 
     private PlayerInput _input;
+    private PlayerScore _score;
+
     private ProjectileSpawner _projectileSpawner;
+
+    public PlayerScore Score => _score;
 
     public void Initialize(ConfigContainer.PlayerConfig config, IInput input, ProjectileFactory projectileFactory)
     {
         InitializePlayerInput(input, _body);
+        InitializePlayerScore();
 
         InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);
 
@@ -27,6 +32,11 @@ public class PlayerController : EntityController
     private void InitializePlayerInput(IInput input, Rigidbody body)
     {
         _input = new PlayerInput(input, body);
+    }
+
+    private void InitializePlayerScore()
+    {
+        _score = new PlayerScore();
     }
 
     private void InitializeProjectileSpawner(ProjectileFactory projectileFactory, ConfigContainer.ProjectileConfig projectileConfig)

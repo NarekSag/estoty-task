@@ -5,8 +5,19 @@ public class ScoreView : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
 
-    public void UpdateText(int newScore)
+    public void Initialize(PlayerScore score)
     {
-        _scoreText.text = newScore.ToString();
+        score.OnScoreChanged += UpdateText;
+        UpdateText(score.Current);
+    }
+
+    private void UpdateText(int score)
+    {
+        _scoreText.text = score.ToString();
+    }
+
+    public void UpdateText(string value)
+    {
+        _scoreText.text = value;
     }
 }

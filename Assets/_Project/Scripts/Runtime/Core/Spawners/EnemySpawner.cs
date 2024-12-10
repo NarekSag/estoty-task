@@ -10,6 +10,8 @@ public class EnemySpawner
 
     private Transform _parent;
 
+    public event Action<EnemyController> OnSpawn;
+
     public EnemySpawner(EnemyFactory enemyFactory, ProjectileFactory projectileFactory)
     {
         _enemyFactory = enemyFactory;
@@ -54,6 +56,8 @@ public class EnemySpawner
         SetParent(enemy);
         SetRandomPosition(enemy, config.HorizontalSpawnRange);
         SetProjectileSpawner(enemy, config.ProjectileConfig);
+
+        OnSpawn?.Invoke(enemy);
     }
 
     private void SetProjectileSpawner(EnemyController enemy, ConfigContainer.ProjectileConfig projectileConfig)

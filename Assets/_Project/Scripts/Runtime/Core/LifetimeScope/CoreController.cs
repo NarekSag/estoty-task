@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Scripts.Runtime.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CoreController : ILoadUnit<ConfigContainer>
@@ -45,6 +46,7 @@ public class CoreController : ILoadUnit<ConfigContainer>
     {
         _enemySpawner = new EnemySpawner(_enemyFactory, _projectileFactory);
         _enemySpawner.StartSpawning(enemyConfig).Forget();
+        _enemySpawner.OnSpawn += HandleEnemySpawn;
     }
 
     private void InitializeViewController()
@@ -60,11 +62,21 @@ public class CoreController : ILoadUnit<ConfigContainer>
     private void HandlePlayerDeath()
     {
         _viewController.GameplayView.Hide();
-        _viewController.GameOverView.Show();
+        _viewController.GameOverView.Show(Player.Score.Current);
 
         _enemySpawner.Stop();
 
         Time.timeScale = 0f;
+    }
+
+    private void HandleEnemySpawn(EnemyController enemy)
+    {
+        enemy.Health.OnDeath += HandleEnemyDeath;
+    }
+
+    private void HandleEnemyDeath()
+    {
+        Player.Score.Add(1);
     }
 
     private void RestartCore()
