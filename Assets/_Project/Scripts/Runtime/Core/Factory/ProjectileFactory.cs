@@ -5,18 +5,16 @@ using System;
 
 public class ProjectileFactory
 {
-    private readonly Projectile _playerProjectilePrefab;
-    private readonly Projectile _enemyProjectilePrefab;
     private readonly ObjectPool<Projectile> _playerProjectilePool;
     private readonly ObjectPool<Projectile> _enemyProjectilePool;
 
     public ProjectileFactory()
     {
-        _playerProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Player);
-        _enemyProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Enemy);
+        var playerProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Player);
+        var enemyProjectilePrefab = ResourceLoader.Load<Projectile>(RuntimeConstants.Resources.Projectiles.Enemy);
 
-        _playerProjectilePool = new ObjectPool<Projectile>(_playerProjectilePrefab);
-        _enemyProjectilePool = new ObjectPool<Projectile>(_enemyProjectilePrefab);
+        _playerProjectilePool = new ObjectPool<Projectile>(playerProjectilePrefab);
+        _enemyProjectilePool = new ObjectPool<Projectile>(enemyProjectilePrefab);
     }
 
     public Projectile CreateProjectile(EntityType type, ConfigContainer.ProjectileConfig config)

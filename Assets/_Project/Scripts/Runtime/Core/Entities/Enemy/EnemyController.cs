@@ -9,7 +9,7 @@ public class EnemyController : EntityController
 {
     [SerializeField] private PowerUp _prefabPowerUp;
 
-    protected float _speed;
+    private float _speed;
     private float _powerUpSpawnChance = 0.1f;
     private CancellationTokenSource _projectileSpawnerCts;
 

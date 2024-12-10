@@ -2,10 +2,11 @@ using UnityEngine;
 
 public abstract class EntityController : MonoBehaviour
 {
-    [SerializeField] protected GameObject _prefabExplosion;
+    [SerializeField] protected GameObject model;
+    [SerializeField] protected ParticleSystem explosionParticle;
 
     protected Rigidbody _body;
-    protected EntityHealth _health;
+    private EntityHealth _health;
 
     public EntityHealth Health => _health;
 
@@ -17,9 +18,12 @@ public abstract class EntityController : MonoBehaviour
     public virtual void Initialize(float health)
     {
         InitializeHealth(health);
+        
+        ToggleExplosionParticle(false);
+        model.SetActive(true);
     }
 
-    protected void InitializeHealth(float health)
+    private void InitializeHealth(float health)
     {
         _health = new EntityHealth(health);
         _health.OnDeath += HandleDeath;
@@ -27,9 +31,22 @@ public abstract class EntityController : MonoBehaviour
 
     protected virtual void HandleDeath()
     {
-        var fx = Instantiate(_prefabExplosion);
-        fx.transform.position = transform.position;
-        gameObject.SetActive(false);
+        ToggleExplosionParticle(true);
+        model.SetActive(false);
+    }
+
+    private void ToggleExplosionParticle(bool state)
+    {
+        if (state)
+        {
+            explosionParticle.gameObject.SetActive(true);
+            explosionParticle.Play();
+        }
+        else
+        {
+            explosionParticle.gameObject.SetActive(false);
+            explosionParticle.Stop();
+        }
     }
 
     protected abstract void FixedUpdate();
