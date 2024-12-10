@@ -12,23 +12,28 @@ public class EnemyController : EntityController
     private float _speed;
     private float _powerUpSpawnChance = 0.1f;
     private CancellationTokenSource _projectileSpawnerCts;
+    private ObjectPool<EnemyController> _pool;
 
-    public void Initialize(ConfigContainer.EnemyConfig config)
+    public void Initialize(ConfigContainer.EnemyConfig config, ObjectPool<EnemyController> pool)
     {
+        base.Initialize(config.Health);
+        
+        _pool = pool;
+        
         _powerUpSpawnChance = config.PowerUpSpawnChance;
         _speed = config.Speed;
 
         _projectileSpawnerCts = new CancellationTokenSource();
-
-        base.Initialize(config.Health);
+        Health.OnDeath += ReturnToPool;
     }
 
     protected override void FixedUpdate()
     {
-        var p = _body.position;
-        p += Vector3.down * (_speed * Time.deltaTime);
-        _body.MovePosition(p);
+        MoveObject();
     }
+
+    private void MoveObject()
+        => _body.MovePosition(_body.position + Vector3.down * (_speed * Time.deltaTime));
 
     public void InitializeProjectileSpawner(
         ConfigContainer.ProjectileConfig projectileConfig,
@@ -56,5 +61,11 @@ public class EnemyController : EntityController
         }
 
         base.HandleDeath();
+    }
+
+    private void ReturnToPool()
+    {
+        _pool?.Return(this);
+        Health.OnDeath -= ReturnToPool;
     }
 }

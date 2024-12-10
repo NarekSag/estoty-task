@@ -6,10 +6,7 @@ public class EnemyFactory : BaseFactory<EnemyController>
 
         if (enemyObject == null) return null;
 
-        enemyObject.Initialize(enemyConfig);
-        enemyObject.Health.OnDeath += () => ReturnObject(enemyObject); //TODO: Get rid of lambda
-        enemyObject.gameObject.SetActive(true);
-
+        enemyObject.Initialize(enemyConfig, ObjectPool);
         return enemyObject;
     }
 }

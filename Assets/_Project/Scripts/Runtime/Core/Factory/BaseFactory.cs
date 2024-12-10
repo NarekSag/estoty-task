@@ -5,24 +5,24 @@ using UnityEngine;
 public abstract class BaseFactory<TObject> : ILoadUnit<string> where TObject : Object
 {
     private TObject _loadedObject;
-    private ObjectPool<TObject> _objectPool;
+    protected ObjectPool<TObject> ObjectPool;
 
     public UniTask Load(string resourcePath)
     {
         _loadedObject = ResourceLoader.Load<TObject>(resourcePath);
 
-        _objectPool = new ObjectPool<TObject>(_loadedObject);
+        ObjectPool = new ObjectPool<TObject>(_loadedObject);
 
         return UniTask.CompletedTask;
     }
 
     protected TObject CreateObject()
     {
-        return _objectPool.Get();
+        return ObjectPool.Get();
     }
 
-    public virtual void ReturnObject(TObject obj)
+    protected virtual void ReturnObject(TObject obj)
     {
-        _objectPool.Return(obj);
+        ObjectPool.Return(obj);
     }
 }
