@@ -39,7 +39,7 @@ public class EnemySpawner
     {
         if (UnityEngine.Random.value < 0.4f)
         {
-            enemy.InitializeProjectileSpawner(projectileConfig, _projectileSpawner);
+            enemy.ProjectileHandler.Initialize(projectileConfig, _projectileSpawner, enemy.transform);
         }
     }
 

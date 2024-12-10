@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class EntityHealth : IHealth, IDamage
+public class EntityHealth : IHealth
 {
     public event Action OnHealthChanged;
     public event Action OnDeath;
@@ -30,7 +30,6 @@ public class EntityHealth : IHealth, IDamage
         if (_current <= 0)
         {
             OnDeath?.Invoke();
-            OnDeath = null;
         }
     }
 }

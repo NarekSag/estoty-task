@@ -1,65 +1,84 @@
-using Cysharp.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Threading;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class EnemyController : EntityController
 {
     [SerializeField] private PowerUp _prefabPowerUp;
-
-    private float _speed;
     private float _powerUpSpawnChance = 0.1f;
-    private CancellationTokenSource _projectileSpawnerCts;
+
     private ObjectPool<EnemyController> _pool;
+
+    private BoundsHandler _boundsHandler;
+    private EnemyMovement _movement;
+    private EnemyProjectileHandler _projectileHandler;
+    private EnemyPowerUp _powerUp;
+
+    public EnemyProjectileHandler ProjectileHandler => _projectileHandler;
+
+    private bool _isOutsideBounds;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        InitializeBoundsHandler();
+        InitializePowerUp();
+    }
 
     public void Initialize(ConfigContainer.EnemyConfig config, ObjectPool<EnemyController> pool)
     {
         base.Initialize(config.Health);
-        
-        _pool = pool;
-        
-        _powerUpSpawnChance = config.PowerUpSpawnChance;
-        _speed = config.Speed;
+        InitializeMovement(config.Speed);
+        InitializeProjectileHandler();
 
-        _projectileSpawnerCts = new CancellationTokenSource();
+        _pool = pool;
+        _powerUpSpawnChance = config.PowerUpSpawnChance;
+
+        _isOutsideBounds = false;
+
         Health.OnDeath += ReturnToPool;
     }
 
     protected override void FixedUpdate()
     {
-        MoveObject();
+        if (IsDead || _isOutsideBounds) return;
+
+        _boundsHandler.CheckBounds();
+        _movement.Move();
     }
 
-    private void MoveObject()
-        => _body.MovePosition(_body.position + Vector3.down * (_speed * Time.deltaTime));
-
-    public void InitializeProjectileSpawner(
-        ConfigContainer.ProjectileConfig projectileConfig,
-        ProjectileSpawner sharedProjectileSpawner)
+    private void InitializeBoundsHandler()
     {
-        sharedProjectileSpawner.StartSpawning(
-            EntityType.Enemy,
-            projectileConfig,
-            transform,
-            _projectileSpawnerCts.Token
-        ).Forget();
+        _boundsHandler = new BoundsHandler(transform);
+        _boundsHandler.OnOutsideBounds += HandleOutsideBounds;
+    }
+
+    private void InitializeMovement(float speed)
+    {
+        _movement = new EnemyMovement(_body, speed);
+    }
+
+    private void InitializeProjectileHandler()
+    {
+        _projectileHandler = new EnemyProjectileHandler();
+    }
+
+    private void InitializePowerUp()
+    {
+        _powerUp = new EnemyPowerUp(_prefabPowerUp);
+    }
+
+    private void HandleOutsideBounds()
+    {
+        _projectileHandler.Reset();
+        ToggleEntityState(false);
+        ReturnToPool();
+        _isOutsideBounds = true;
     }
 
     protected override void HandleDeath()
     {
-        _projectileSpawnerCts?.Cancel();
-        _projectileSpawnerCts?.Dispose();
-        _projectileSpawnerCts = null;
-
-        if (UnityEngine.Random.value < _powerUpSpawnChance)
-        {
-            var powerup = Instantiate(_prefabPowerUp);
-            var types = Enum.GetValues(typeof(PowerUp.PowerUpType)).Cast<PowerUp.PowerUpType>().ToList();
-            powerup.SetType(types[UnityEngine.Random.Range(0, types.Count)]);
-        }
-
+        _projectileHandler.Reset();
+        _powerUp.Generate(_powerUpSpawnChance);
         base.HandleDeath();
     }
 
