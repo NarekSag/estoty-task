@@ -16,7 +16,7 @@ public class PlayerInput
         _body = body;
     }
 
-    private void HandleInput()
+    public void HandleInput()
     {
         if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
             Move();
