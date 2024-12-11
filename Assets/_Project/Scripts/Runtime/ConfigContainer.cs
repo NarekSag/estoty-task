@@ -41,10 +41,10 @@ public sealed class ConfigContainer : ILoadUnit
         public float Speed;
         public float PowerUpSpawnChance;
 
-        public float SpawnInterval;
         public float HorizontalSpawnRange;
 
         public ProjectileConfig ProjectileConfig;
+        public SpawnerConfig SpawnerConfig;
     }
 
     [Serializable]
@@ -53,5 +53,13 @@ public sealed class ConfigContainer : ILoadUnit
         public float Speed;
         public int Damage;
         public float FireInterval;
+    }
+
+    [Serializable]
+    public class SpawnerConfig
+    {
+        public float SpawnInterval;
+        public float MinSpawnInterval;
+        public float IntervalDecreaseAmount;
     }
 }

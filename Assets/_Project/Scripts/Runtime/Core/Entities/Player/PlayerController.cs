@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : EntityController
+public class PlayerController : EntityController, IPowerUpReceiver
 {
     [SerializeField] private Transform _projectileSpawnLocation;
 
@@ -53,9 +53,25 @@ public class PlayerController : EntityController
 
     public void AddPowerUp(PowerUp.PowerUpType type)
     {
-        if(type.Equals(PowerUp.PowerUpType.FIRE_RATE))
+        switch(type)
         {
-            //TODO: UPDATE FireIntervalValue in ProjectileSpawner
+            case PowerUp.PowerUpType.FIRE_RATE:
+                _projectileSpawner.DecreaseFireInterval(0.1f);
+                break;
+            case PowerUp.PowerUpType.DAMAGE:
+                _projectileSpawner.IncreaseDamage(1);
+                break;
+            case PowerUp.PowerUpType.PROJECTILE_SPEED:
+                _projectileSpawner.IncreaseSpeed(0.2f);
+                break;
+            case PowerUp.PowerUpType.HEALTH:
+                Health.AddHealth();
+                break;
         }
     }
+}
+
+public interface IPowerUpReceiver
+{
+    void AddPowerUp(PowerUp.PowerUpType type);
 }

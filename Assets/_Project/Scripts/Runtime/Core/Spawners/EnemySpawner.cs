@@ -7,10 +7,13 @@ public class EnemySpawner
 {
     private readonly EnemyFactory _enemyFactory;
     private readonly ProjectileSpawner _projectileSpawner;
-
     private Transform _parent;
 
     public event Action<EnemyController> OnSpawn;
+
+    private CancellationTokenSource _cancellationTokenSource;
+    private int _spawnedEnemiesCount;
+    private float _currentSpawnInterval;
 
     public EnemySpawner(EnemyFactory enemyFactory, ProjectileFactory projectileFactory)
     {
@@ -18,20 +21,30 @@ public class EnemySpawner
         _projectileSpawner = new ProjectileSpawner(projectileFactory);
     }
 
-    private CancellationTokenSource _cancellationTokenSource;
-
     public async UniTask StartSpawning(ConfigContainer.EnemyConfig config)
     {
         Stop();
 
         _cancellationTokenSource = new CancellationTokenSource();
+        ConfigContainer.SpawnerConfig spawnerConfig = config.SpawnerConfig;
+        
+        _spawnedEnemiesCount = 0;
+        _currentSpawnInterval = spawnerConfig.SpawnInterval;
 
         try
         {
             while (true)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(config.SpawnInterval), cancellationToken: _cancellationTokenSource.Token);
+                await UniTask.Delay(TimeSpan.FromSeconds(_currentSpawnInterval), cancellationToken: _cancellationTokenSource.Token);
                 SpawnEnemy(config);
+
+                _spawnedEnemiesCount++;
+
+                if (_spawnedEnemiesCount % 10 == 0)
+                {
+                    _currentSpawnInterval = Mathf.Max(spawnerConfig.MinSpawnInterval, _currentSpawnInterval - spawnerConfig.IntervalDecreaseAmount);
+                    Debug.Log($"Spawn interval decreased to: {_currentSpawnInterval}");
+                }
             }
         }
         catch (OperationCanceledException)
@@ -50,7 +63,6 @@ public class EnemySpawner
     private void SpawnEnemy(ConfigContainer.EnemyConfig config)
     {
         EnemyController enemy = _enemyFactory.CreateEnemy(config);
-
         if (enemy == null) return;
 
         SetParent(enemy);
@@ -86,8 +98,6 @@ public class EnemySpawner
         return UnityEngine.Random.Range(-horizontalSpawnRange, horizontalSpawnRange);
     }
 
-    // To keep the inspector organized, we will create a EnemySpawner object 
-    // so that all enemies are stored within this parent object.
     private void SetupSpawnerParent()
     {
         GameObject parentObject = new GameObject("EnemySpawner");

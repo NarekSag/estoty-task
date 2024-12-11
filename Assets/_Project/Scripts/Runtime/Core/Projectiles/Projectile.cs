@@ -20,10 +20,8 @@ public class Projectile : MonoBehaviour
         _trailRenderer = GetComponent<TrailRenderer>();
     }
 
-    public void Initialize(ConfigContainer.ProjectileConfig config, EntityType type)
+    public void Initialize(EntityType type)
     {
-        _damage = config.Damage;
-        _speed = config.Speed;
         EntityType = type;
     }
 
@@ -79,5 +77,15 @@ public class Projectile : MonoBehaviour
         _trailRenderer?.Clear();
 
         OnDestroy?.Invoke(this);
+    }
+
+    public void SetDamage(int damage)
+    {
+        _damage = damage;
+    }
+
+    public void SetSpeed(float speed)
+    {
+        _speed = speed;
     }
 }

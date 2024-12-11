@@ -5,21 +5,25 @@
       "MovementRangeMin": -3.0,
       "MovementRangeMax": 3.0,
       "ProjectileConfig": {
-        "Speed": 5.0,
+        "Speed": 2.0,
         "Damage": 1,
-        "FireInterval": 0.4
+        "FireInterval": 2.5
       }
     },
     "EnemyConfig": {
       "Health": 2,
       "Speed": 2.0,
       "PowerUpSpawnChance": 0.1,
-      "SpawnInterval": 1.25,
       "HorizontalSpawnRange": 2.8,
       "ProjectileConfig": {
         "Speed": 3.5,
         "Damage": 1,
         "FireInterval": 2.5
+      },
+      "SpawnerConfig": {
+        "SpawnInterval": 3.0,
+        "MinSpawnInterval": 1.0,
+        "IntervalDecreaseAmount": 0.2
       }
     }
   }

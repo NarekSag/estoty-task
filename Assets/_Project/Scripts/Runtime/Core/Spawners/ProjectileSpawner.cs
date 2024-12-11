@@ -8,6 +8,10 @@ public class ProjectileSpawner
     private readonly ProjectileFactory _factory;
     private Transform _parent;
 
+    private int _currentDamage;
+    private float _currentFireInterval;
+    private float _currentSpeed;
+
     private CancellationTokenSource _cancellationTokenSource;
 
     public ProjectileSpawner(ProjectileFactory factory)
@@ -26,8 +30,10 @@ public class ProjectileSpawner
     {
         Stop();
         _cancellationTokenSource = new CancellationTokenSource();
+        _currentFireInterval = config.FireInterval;
+        _currentDamage = config.Damage;
+        _currentSpeed = config.Speed;
 
-        // Combine the local and external cancellation tokens
         var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(
             _cancellationTokenSource.Token,
             externalCancellationToken
@@ -40,7 +46,7 @@ public class ProjectileSpawner
             while (!combinedToken.IsCancellationRequested)
             {
                 await UniTask.Delay(
-                    TimeSpan.FromSeconds(config.FireInterval),
+                    TimeSpan.FromSeconds(_currentFireInterval),
                     cancellationToken: combinedToken
                 );
 
@@ -60,12 +66,12 @@ public class ProjectileSpawner
     private void SpawnProjectile(EntityType type, ConfigContainer.ProjectileConfig config, Transform spawnLocation)
     {
         Projectile projectile = _factory.CreateProjectile(type, config);
+        projectile.SetDamage(_currentDamage);
+        projectile.SetSpeed(_currentSpeed);
         projectile.transform.SetParent(_parent);
         projectile.transform.position = spawnLocation.position;
     }
 
-    // To keep the inspector organized, we will create a ProjectileSpawner object 
-    // so that all projectiles are stored within this parent object.
     private void SetupSpawnerParent(Transform parent = null)
     {
         _parent = parent ?? new GameObject("ProjectileSpawner").transform;
@@ -76,5 +82,20 @@ public class ProjectileSpawner
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
+    }
+
+    public void DecreaseFireInterval(float decreaseAmount, float minInterval = 0.1f)
+    {
+        _currentFireInterval = Mathf.Max(minInterval, _currentFireInterval - decreaseAmount);
+    }
+
+    public void IncreaseDamage(int amount)
+    {
+        _currentDamage += amount;
+    }
+
+    public void IncreaseSpeed(float amount)
+    {
+        _currentSpeed += amount;
     }
 }

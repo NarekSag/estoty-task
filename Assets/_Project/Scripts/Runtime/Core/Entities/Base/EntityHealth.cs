@@ -40,4 +40,11 @@ public class EntityHealth : MonoBehaviour, IHealth, IDamageable
         _current = 0;
         OnDeath?.Invoke();
     }
+
+    public void AddHealth()
+    {
+        _current = Mathf.Clamp(_current + 1, 0, _max);
+
+        OnHealthChanged?.Invoke(_current);
+    }
 }

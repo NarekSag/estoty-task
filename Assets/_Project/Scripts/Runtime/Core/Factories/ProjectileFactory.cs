@@ -26,7 +26,7 @@ public class ProjectileFactory
             _ => throw new ArgumentException($"Unsupported projectile type: {type}")
         };
 
-        projectileObject.Initialize(config, type);
+        projectileObject.Initialize(type);
         projectileObject.gameObject.SetActive(true);
         projectileObject.OnDestroy += ReturnProjectile;
 

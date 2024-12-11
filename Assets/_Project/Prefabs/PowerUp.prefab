@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1114105362415468354}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 457658424064315601}
   - component: {fileID: 8868915200252193612}
   - component: {fileID: 6874651111266909926}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VFX_Blubbles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4874,7 +4874,7 @@ GameObject:
   - component: {fileID: 3572435999392199928}
   - component: {fileID: 6844746904859474509}
   - component: {fileID: 3322102763667225299}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PowerUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4942,7 +4942,7 @@ GameObject:
   - component: {fileID: 2888152430134446928}
   - component: {fileID: 1171529222932541178}
   - component: {fileID: 451044803925620623}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VFX_Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5023,7 +5023,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6861213402222226606}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5113,6 +5113,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PowerUp_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c3b44902129a03d438a396039413d204,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
