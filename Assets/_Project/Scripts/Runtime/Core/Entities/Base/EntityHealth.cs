@@ -34,4 +34,10 @@ public class EntityHealth : MonoBehaviour, IHealth, IDamageable
             OnDeath?.Invoke();
         }
     }
+
+    public void Kill()
+    {
+        _current = 0;
+        OnDeath?.Invoke();
+    }
 }
