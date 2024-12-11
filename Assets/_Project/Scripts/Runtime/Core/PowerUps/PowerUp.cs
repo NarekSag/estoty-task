@@ -53,10 +53,3 @@ public class PowerUp : MonoBehaviour {
         Destroy(gameObject);
     }
 }
-
-/*public interface IMoveable
-{
-    void Move();
-    BoundsHandler BoundsHandler { get; set; }
-    void HandleOutsideBounds();
-}*/

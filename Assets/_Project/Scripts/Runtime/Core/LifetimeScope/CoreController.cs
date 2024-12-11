@@ -40,6 +40,7 @@ public class CoreController : ILoadUnit<ConfigContainer>
     {
         Player = _playerFactory.CreatePlayer(playerConfig);
         Player.Health.OnDeath += HandlePlayerDeath;
+        Player.OnPowerUp += HandlePlayerPowerUp;
     }
 
     private void InitializeEnemySpawner(ConfigContainer.EnemyConfig enemyConfig)
@@ -67,6 +68,11 @@ public class CoreController : ILoadUnit<ConfigContainer>
         _enemySpawner.Stop();
 
         Time.timeScale = 0f;
+    }
+
+    private void HandlePlayerPowerUp(PowerUp.PowerUpType type)
+    {
+        _viewController.GameplayView.PowerUpView.ShowPowerUp(type);
     }
 
     private void HandleEnemySpawn(EnemyController enemy)

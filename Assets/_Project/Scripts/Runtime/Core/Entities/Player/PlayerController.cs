@@ -14,6 +14,8 @@ public class PlayerController : EntityController, IPowerUpReceiver
 
     public PlayerScore Score => _score;
 
+    public event Action<PowerUp.PowerUpType> OnPowerUp;
+
     public void Initialize(ConfigContainer.PlayerConfig config, IInput input, ProjectileFactory projectileFactory)
     {
         InitializePlayerInput(input, Body);
@@ -68,6 +70,8 @@ public class PlayerController : EntityController, IPowerUpReceiver
                 Health.AddHealth();
                 break;
         }
+
+        OnPowerUp?.Invoke(type);
     }
 }
 
