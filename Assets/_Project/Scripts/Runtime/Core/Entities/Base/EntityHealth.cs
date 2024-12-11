@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class EntityHealth : IHealth
+public class EntityHealth : MonoBehaviour, IHealth, IDamageable
 {
     public event Action<float> OnHealthChanged;
     public event Action OnDeath;
@@ -13,7 +13,9 @@ public class EntityHealth : IHealth
 
     public float Max => _max;
 
-    public EntityHealth(float maxHealth)
+    public bool IsAlive => _current > 0;
+
+    public void Initialize(float maxHealth)
     {
         _max = maxHealth;
         _current = maxHealth;

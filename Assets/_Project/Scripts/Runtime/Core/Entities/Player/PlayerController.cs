@@ -16,7 +16,7 @@ public class PlayerController : EntityController
 
     public void Initialize(ConfigContainer.PlayerConfig config, IInput input, ProjectileFactory projectileFactory)
     {
-        InitializePlayerInput(input, _body);
+        InitializePlayerInput(input, Body);
         InitializePlayerScore();
 
         InitializeProjectileSpawner(projectileFactory, config.ProjectileConfig);

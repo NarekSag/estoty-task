@@ -40,7 +40,7 @@ public class EnemyController : EntityController
 
     protected override void FixedUpdate()
     {
-        if (IsDead || _isOutsideBounds) return;
+        if (!Health.IsAlive || _isOutsideBounds) return;
 
         _boundsHandler.CheckBounds();
         _movement.Move();
@@ -54,7 +54,7 @@ public class EnemyController : EntityController
 
     private void InitializeMovement(float speed)
     {
-        _movement = new EnemyMovement(_body, speed);
+        _movement = new EnemyMovement(Body, speed);
     }
 
     private void InitializeProjectileHandler()

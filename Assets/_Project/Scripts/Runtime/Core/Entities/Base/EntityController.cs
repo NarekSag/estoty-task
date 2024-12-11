@@ -6,20 +6,18 @@ public abstract class EntityController : MonoBehaviour
     [SerializeField] protected GameObject model;
     [SerializeField] protected ParticleSystem explosionParticle;
 
-    protected Rigidbody _body;
-    protected Collider _collider;
+    protected Rigidbody Body;
+    protected Collider Collider;
 
-    private EntityHealth _health;
     private EntityExplosion _explosion;
 
-    public EntityHealth Health => _health;
-
-    public bool IsDead { get; private set; }
+    public EntityHealth Health { get; private set; }
 
     protected virtual void Awake()
     {
-        _body = GetComponent<Rigidbody>();
-        _collider = GetComponent<Collider>();
+        Body = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+        Health = GetComponent<EntityHealth>();
 
         _explosion = new EntityExplosion(explosionParticle);
     }
@@ -34,7 +32,7 @@ public abstract class EntityController : MonoBehaviour
 
     private void InitializeHealth(float health)
     {
-        _health = new EntityHealth(health);
+        Health.Initialize(health);
         Health.OnDeath += HandleDeath;
     }
 
@@ -47,8 +45,7 @@ public abstract class EntityController : MonoBehaviour
     protected void ToggleEntityState(bool isActive)
     {
         model.SetActive(isActive);
-        _collider.enabled = isActive;
-        IsDead = !isActive;
+        Collider.enabled = isActive;
     }
 
     protected abstract void FixedUpdate();

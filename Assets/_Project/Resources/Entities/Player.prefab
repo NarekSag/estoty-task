@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3346286131653351727}
   - component: {fileID: 8188727779393496210}
   - component: {fileID: 6461948587765846249}
+  - component: {fileID: 2564256270509037791}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -99,6 +100,18 @@ MonoBehaviour:
   model: {fileID: 5808141551783612939}
   explosionParticle: {fileID: 8354050185890446411}
   _projectileSpawnLocation: {fileID: 8914618954283462440}
+--- !u!114 &2564256270509037791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090924019326213141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6021792e33a6bc94f955a60a1d7b8128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2741759857950811384
 GameObject:
   m_ObjectHideFlags: 0

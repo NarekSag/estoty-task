@@ -66,21 +66,10 @@ public class Projectile : MonoBehaviour
 
     private bool TryDamageTarget(Collider other)
     {
-        var enemy = other.GetComponent<EnemyController>();
-        if (enemy != null)
-        {
-            enemy.Health.TakeDamage(_damage);
-            return true;
-        }
-
-        var player = other.GetComponent<PlayerController>();
-        if (player != null)
-        {
-            player.Health.TakeDamage(_damage);
-            return true;
-        }
-
-        return false;
+        var damageable = other.GetComponent<IDamageable>();
+        if (damageable == null) return false;
+        damageable.TakeDamage(_damage);
+        return true;
     }
 
     private void DestroyProjectile()
